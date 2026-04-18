@@ -9,7 +9,7 @@ export default function Footer() {
 
           {/* Brand */}
           <div>
-            <h3 className="text-white font-bold text-sm mb-3">Rahul Shetty Academy</h3>
+            <h3 className="text-white font-bold text-sm mb-3">VenuePass</h3>
             <p className="text-xs leading-relaxed">
               India's leading QA automation training academy — empowering engineers to build real-world testing skills.
             </p>
@@ -28,7 +28,7 @@ export default function Footer() {
               ].map((course) => (
                 <li key={course}>
                   <a
-                    href="https://rahulshettyacademy.com"
+                    href="https://venuepass.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-white transition-colors"
@@ -81,15 +81,15 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-          <p>© {new Date().getFullYear()} Rahul Shetty Academy. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} VenuePass. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <a
-              href="https://rahulshettyacademy.com"
+              href="https://venuepass.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
             >
-              rahulshettyacademy.com →
+              venuepass.com →
             </a>
             <a
               href="https://techsmarthire.com"

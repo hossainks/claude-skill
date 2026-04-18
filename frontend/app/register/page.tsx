@@ -63,9 +63,9 @@ export default function RegisterPage() {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-sm font-bold">
-              RSA
+              VP
             </div>
-            <span className="text-sm font-semibold tracking-wide text-white/80 uppercase">Rahul Shetty Academy</span>
+            <span className="text-sm font-semibold tracking-wide text-white/80 uppercase">VenuePass</span>
           </div>
           <div className="w-10 h-0.5 bg-white/30 mb-10" />
 
@@ -89,12 +89,12 @@ export default function RegisterPage() {
           {/* CTAs */}
           <div className="mt-8 flex flex-col gap-3">
             <a
-              href="https://rahulshettyacademy.com"
+              href="https://venuepass.com"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-xs font-semibold text-indigo-700 bg-amber-400 hover:bg-amber-300 transition-colors px-4 py-2.5 rounded-lg w-fit"
             >
-              Explore all courses at RahulShettyAcademy.com
+              Explore all courses at venuepass.com
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
@@ -142,7 +142,7 @@ export default function RegisterPage() {
         {/* Mobile-only brand bar */}
         <div className="md:hidden text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-indigo-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full mb-3">
-            <span>RSA</span>
+            <span>VP</span>
             <span className="text-white/70">·</span>
             <span>QA Practice Hub</span>
           </div>
@@ -252,9 +252,9 @@ export default function RegisterPage() {
           {/* Below-form trust nudge */}
           <p className="text-center text-xs text-gray-400 mt-5 leading-relaxed">
             A practice environment by{' '}
-            <a href="https://rahulshettyacademy.com" target="_blank" rel="noopener noreferrer"
+            <a href="https://venuepass.com" target="_blank" rel="noopener noreferrer"
               className="text-indigo-500 hover:underline font-medium">
-              RahulShettyAcademy.com
+              venuepass.com
             </a>
             {' '}— used by QA engineers worldwide to master automation testing.
           </p>

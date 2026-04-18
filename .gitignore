@@ -29,3 +29,6 @@ Thumbs.db
 # Playwright
 playwright-report/
 test-results/
+
+# Test files
+testuser.txt
