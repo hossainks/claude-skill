@@ -1,21 +1,19 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: "./tests",
   timeout: 30_000,
   expect: { timeout: 5_000 },
   fullyParallel: false,
   retries: 0,
-  reporter: 'html',
+  reporter: "html",
 
   use: {
-    baseURL: 'https://eventhub.rahulshettyacademy.com',
+    baseURL: "http://localhost:3000/",
     headless: true,
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
   },
 
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-  ],
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 });

@@ -32,3 +32,6 @@ test-results/
 
 # Test files
 testuser.txt
+
+# Root-only skill file
+/SKILL.md
