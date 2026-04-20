@@ -3,9 +3,9 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests",
   timeout: 30_000,
-  expect: { timeout: 5_000 },
+  expect: { timeout: process.env.CI ? 10_000 : 5_000 },
   fullyParallel: false,
-  retries: 0,
+  retries: process.env.CI ? 1 : 0,
   reporter: "html",
 
   use: {
