@@ -51,18 +51,27 @@ jobs:
       - name: Build frontend
         run: npm run build --prefix frontend
 
-      - name: Start servers
+      - name: Start backend
         run: |
           npm start --prefix backend &
-          npm start --prefix frontend &
-          npx wait-on tcp:localhost:3001 http://localhost:3000 --timeout 60000
+          # Wait for Express to serve HTTP (not just TCP port open)
+          npx wait-on http-get://localhost:3001/api/docs --timeout 30000
 
       - name: Create test user
         run: |
-          curl -sf -X POST http://localhost:3001/api/auth/register \
+          STATUS=$(curl -s -o /tmp/reg.json -w "%{http_code}" \
+            -X POST http://localhost:3001/api/auth/register \
             -H "Content-Type: application/json" \
-            -d '{"email":"admin@test.com","password":"TestXacfub123%"}' \
-            || echo "User already exists, continuing"
+            -d '{"email":"admin@test.com","password":"TestXacfub123%"}')
+          echo "Registration HTTP $STATUS: $(cat /tmp/reg.json)"
+          # 201 = created, 409 = already exists — both are fine
+          [ "$STATUS" = "201" ] || [ "$STATUS" = "409" ] || \
+            (echo "ERROR: unexpected registration status $STATUS" && exit 1)
+
+      - name: Start frontend
+        run: |
+          npm start --prefix frontend &
+          npx wait-on http://localhost:3000 --timeout 60000
 
       - name: Run Playwright tests
         run: npx playwright test
