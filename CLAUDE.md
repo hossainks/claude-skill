@@ -71,7 +71,7 @@ Key route protection: `AuthGuard` component wraps protected pages and redirects 
 - Locator priority: `data-testid` > role > label/placeholder > ID > CSS class
 - No `page.waitForTimeout()` — use `expect().toBeVisible()`
 - Tests must be self-contained: login → action → assert
-- Test accounts: `rahulshetty1@gmail.com` / `Magiclife1!`
+- Test accounts: `admin@test.com` / `TestXacfub123%`
 - Test scenarios documented in `docs/test-scenarios.md` (53 scenarios, TC-001 to TC-510)
 - Test strategy in `docs/test-strategy.md` (unit / API / component / E2E breakdown)
 

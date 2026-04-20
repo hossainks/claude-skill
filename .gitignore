@@ -29,9 +29,13 @@ Thumbs.db
 # Playwright
 playwright-report/
 test-results/
+.playwright-mcp/
 
 # Test files
 testuser.txt
 
 # Root-only skill file
 /SKILL.md
+
+# Claude Code local settings
+.claude/settings.local.json

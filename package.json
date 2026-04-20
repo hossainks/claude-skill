@@ -10,7 +10,7 @@
     "db:push": "cd backend && npx prisma db push",
     "build": "npm run build --prefix frontend",
     "lint": "npm run lint --prefix frontend",
-    "test": "npx playwright test",
+    "test": "npx playwright test --headed",
     "test:ui": "npx playwright test --ui",
     "test:report": "npx playwright show-report"
   },

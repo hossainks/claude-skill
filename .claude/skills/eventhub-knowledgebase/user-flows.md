@@ -1,12 +1,14 @@
 # EventHub User Flows & Test Data
 
 ## Flow 1: Registration & Login
+
 1. Navigate to /register
 2. Enter email (must be unique) and password (min 6 chars)
 3. Submit -> JWT issued -> redirected to home
 4. Or: Navigate to /login -> enter credentials -> JWT issued -> home
 
 ## Flow 2: Browse & Filter Events
+
 1. Login -> navigate to /events
 2. Use search bar (searches title, description, venue)
 3. Filter by category dropdown (Conference, Concert, etc.)
@@ -15,6 +17,7 @@
 6. Click "Book Now" on any event card
 
 ## Flow 3: Book an Event
+
 1. From event card -> click "Book Now" -> navigate to /events/:id
 2. See event details (title, date, venue, price, available seats)
 3. Select quantity (1-10) using +/- buttons
@@ -24,6 +27,7 @@
 7. Navigate to "View My Bookings" or "Browse Events"
 
 ## Flow 4: Manage Bookings
+
 1. Navigate to /bookings
 2. See list of all bookings with details
 3. Click "View Details" -> /bookings/:id
@@ -33,6 +37,7 @@
 7. Or: "Clear all bookings" from bookings list
 
 ## Flow 5: Admin - Manage Events
+
 1. Navigate to /admin/events
 2. Fill event creation form (title, category, city, venue, date, price, seats)
 3. Submit -> "Event created!" toast
@@ -41,6 +46,7 @@
 6. Delete events (with cascade to bookings)
 
 ## Flow 6: Cross-User Security
+
 1. User A creates a booking
 2. User A captures booking ID
 3. Switch to User B (clear localStorage, re-login)
@@ -52,7 +58,9 @@
 ## Test Data
 
 ### Seeded Data (10 Static Events)
+
 Run `npm run seed` to insert:
+
 - Tech Conference Bangalore (Conference, 500 seats, $1499)
 - Bollywood Night Mumbai (Concert, 1000 seats, $999)
 - IPL Cricket Finals (Sports, 40000 seats, $2499)
@@ -65,7 +73,7 @@ Run `npm run seed` to insert:
 - Food Festival Bangalore (Festival, 2000 seats, $149)
 
 ### Test Accounts
-| Account    | Email                    | Password    |
-|------------|--------------------------|-------------|
-| Gmail User | rahulshetty1@gmail.com   | Magiclife1! |
-| Yahoo User | rahulshetty1@yahoo.com   | Magiclife1! |
+
+| Account    | Email          | Password       |
+| ---------- | -------------- | -------------- |
+| Gmail User | admin@test.com | TestXacfub123% |
