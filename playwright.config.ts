@@ -6,7 +6,7 @@ export default defineConfig({
   expect: { timeout: process.env.CI ? 10_000 : 5_000 },
   fullyParallel: false,
   retries: process.env.CI ? 1 : 0,
-  reporter: "html",
+  reporter: process.env.CI ? [["line"], ["html"]] : "html",
 
   use: {
     baseURL: "http://localhost:3000/",

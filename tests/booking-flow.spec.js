@@ -1,11 +1,10 @@
 import { test, expect } from "@playwright/test";
 
-const BASE_URL = "http://localhost:3000";
 const USER_EMAIL = "admin@test.com";
 const USER_PASSWORD = "TestXacfub123%";
 
 async function login(page) {
-  await page.goto(`${BASE_URL}/login`);
+  await page.goto("/login");
   await page.getByPlaceholder("you@email.com").fill(USER_EMAIL);
   await page.getByLabel("Password").fill(USER_PASSWORD);
   await page.locator("#login-btn").click();
@@ -23,7 +22,7 @@ test.describe("Booking Flow", () => {
     await login(page);
 
     // -- Step 2: Navigate to World Tech Summit via events list (title starts with "W") --
-    await page.goto(`${BASE_URL}/events`);
+    await page.goto("/events");
     await page
       .getByTestId("event-card")
       .filter({ hasText: "World Tech Summit" })
@@ -62,7 +61,7 @@ test.describe("Booking Flow", () => {
     await login(page);
 
     // -- Step 2: Navigate to Dilli Diwali Mela via events list (title starts with "D") --
-    await page.goto(`${BASE_URL}/events`);
+    await page.goto("/events");
     await page
       .getByTestId("event-card")
       .filter({ hasText: "Dilli Diwali Mela" })
@@ -103,7 +102,7 @@ test.describe("Booking Flow", () => {
   }) => {
     // -- Step 1: Login and create a booking so the list is non-empty --
     await login(page);
-    await page.goto(`${BASE_URL}/events`);
+    await page.goto("/events");
     await page
       .getByTestId("event-card")
       .filter({ hasText: "Hollywood Monsoon Night" })
@@ -120,7 +119,7 @@ test.describe("Booking Flow", () => {
 
     // -- Step 2: Navigate to bookings list via confirmation card link --
     await page.getByRole("link", { name: "View My Bookings" }).click();
-    await expect(page).toHaveURL(`${BASE_URL}/bookings`);
+    await expect(page).toHaveURL(/\/bookings$/);
 
     // -- Step 3: Assert page heading --
     await expect(

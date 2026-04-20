@@ -3,6 +3,8 @@ name: Playwright Tests
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   playwright:
@@ -39,7 +41,7 @@ jobs:
       - name: Configure environment
         run: |
           printf 'DATABASE_URL="mysql://root:rootpassword@127.0.0.1:3306/eventhub"\nPORT=3001\nCORS_ORIGIN="http://localhost:3000"\nJWT_SECRET="ci-test-secret"\nSHOW_EXPLORE_LINKS=false\n' > backend/.env
-          echo 'NEXT_PUBLIC_API_URL=http://localhost:3001' > frontend/.env.local
+          echo 'NEXT_PUBLIC_API_URL=http://localhost:3001/api' > frontend/.env.local
 
       - name: Set up database
         run: |
