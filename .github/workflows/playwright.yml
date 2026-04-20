@@ -1,0 +1,76 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_DATABASE: eventhub
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install --prefix backend
+          npm install --prefix frontend
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Configure environment
+        run: |
+          printf 'DATABASE_URL="mysql://root:rootpassword@127.0.0.1:3306/eventhub"\nPORT=3001\nCORS_ORIGIN="http://localhost:3000"\nJWT_SECRET="ci-test-secret"\nSHOW_EXPLORE_LINKS=false\n' > backend/.env
+          echo 'NEXT_PUBLIC_API_URL=http://localhost:3001' > frontend/.env.local
+
+      - name: Set up database
+        run: |
+          npm run db:push
+          npm run seed
+
+      - name: Build frontend
+        run: npm run build --prefix frontend
+
+      - name: Start servers
+        run: |
+          npm start --prefix backend &
+          npm start --prefix frontend &
+          npx wait-on tcp:localhost:3001 http://localhost:3000 --timeout 60000
+
+      - name: Create test user
+        run: |
+          curl -sf -X POST http://localhost:3001/api/auth/register \
+            -H "Content-Type: application/json" \
+            -d '{"email":"admin@test.com","password":"TestXacfub123%"}' \
+            || echo "User already exists, continuing"
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - name: Upload Playwright HTML report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
