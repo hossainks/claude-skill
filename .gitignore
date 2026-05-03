@@ -39,3 +39,9 @@ testuser.txt
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Claude skills - hide all except showcase folders
+.claude/skills/eventhub-knowledgebase/
+.claude/skills/generate-tests/
+.claude/skills/scenario-creation/
+.claude/skills/test-strategy/
