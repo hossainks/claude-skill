@@ -1,0 +1,15 @@
+FROM node:20-bookworm
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Install Chromium and its system dependencies
+RUN npx playwright install chromium --with-deps
+
+COPY playwright.config.ts ./
+COPY tests/ ./tests/
+COPY docker-entrypoint-tests.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
