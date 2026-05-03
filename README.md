@@ -2,11 +2,11 @@
 
 A full-stack ticket booking platform built with **Next.js 14**, **Express.js**, **Prisma ORM**, and **MySQL**.
 
-| Layer | Technology |
-|---|---|
+| Layer    | Technology                                                        |
+| -------- | ----------------------------------------------------------------- |
 | Frontend | Next.js 14 (App Router), Tailwind CSS, React Query v5, TypeScript |
-| Backend | Node.js, Express.js, Swagger UI |
-| Database | MySQL 8 via Prisma ORM |
+| Backend  | Node.js, Express.js, Swagger UI                                   |
+| Database | MySQL 8 via Prisma ORM                                            |
 
 ---
 
@@ -56,6 +56,8 @@ DATABASE_URL="mysql://root:your_password@localhost:3306/eventhub"
 PORT=3001
 NODE_ENV=development
 CORS_ORIGIN=http://localhost:3000
+JWT_SECRET=your_jwt_secret_here
+SHOW_EXPLORE_LINKS=false
 ```
 
 **Frontend** — create `/frontend/.env.local`:
@@ -86,24 +88,42 @@ Inserts 10 sample events across 5 categories and 5 Indian cities.
 npm run dev
 ```
 
-| Service | URL |
-|---|---|
-| Frontend | http://localhost:3000 |
-| Backend API | http://localhost:3001 |
-| Swagger UI | http://localhost:3001/api/docs |
+| Service     | URL                            |
+| ----------- | ------------------------------ |
+| Frontend    | http://localhost:3000          |
+| Backend API | http://localhost:3001          |
+| Swagger UI  | http://localhost:3001/api/docs |
+
+---
+
+## Docker Setup
+
+A `docker-compose.yml` is provided to run the full stack (frontend, backend, and MySQL) in containers.
+
+```bash
+docker compose up --build
+```
+
+| Service     | URL                            |
+| ----------- | ------------------------------ |
+| Frontend    | http://localhost:3000          |
+| Backend API | http://localhost:3001          |
+| Swagger UI  | http://localhost:3001/api/docs |
+
+> Environment variables are configured inside `docker-compose.yml`. No separate `.env` files are needed for Docker.
 
 ---
 
 ## Root Scripts
 
-| Script | Description |
-|---|---|
-| `npm run dev` | Start frontend + backend concurrently |
-| `npm run setup` | Install npm deps in both `/backend` and `/frontend` |
-| `npm run seed` | Insert 10 sample events into the database |
+| Script            | Description                                                     |
+| ----------------- | --------------------------------------------------------------- |
+| `npm run dev`     | Start frontend + backend concurrently                           |
+| `npm run setup`   | Install npm deps in both `/backend` and `/frontend`             |
+| `npm run seed`    | Insert 10 sample events into the database                       |
 | `npm run migrate` | Run `prisma migrate dev` (interactive, creates migration files) |
-| `npm run db:push` | Push schema to DB without migration files (non-interactive) |
-| `npm run build` | Build the Next.js frontend for production |
+| `npm run db:push` | Push schema to DB without migration files (non-interactive)     |
+| `npm run build`   | Build the Next.js frontend for production                       |
 
 ---
 
@@ -111,33 +131,44 @@ npm run dev
 
 Base URL: `http://localhost:3001`
 
+> All `/api/events` and `/api/bookings` routes require a valid JWT via `Authorization: Bearer <token>` header.
+
+### Auth
+
+| Method | Endpoint             | Description                          |
+| ------ | -------------------- | ------------------------------------ |
+| `POST` | `/api/auth/register` | Register a new user (returns JWT)    |
+| `POST` | `/api/auth/login`    | Login and receive a JWT              |
+| `GET`  | `/api/auth/me`       | Get the currently authenticated user |
+
 ### Health
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/health` | Returns API status + DB connection status |
+| Method | Endpoint      | Description                               |
+| ------ | ------------- | ----------------------------------------- |
+| `GET`  | `/api/health` | Returns API status + DB connection status |
 
 ### Events
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/events` | List events (paginated, filterable) |
-| `GET` | `/api/events/:id` | Get a single event by ID |
-| `POST` | `/api/events` | Create a new event |
-| `PUT` | `/api/events/:id` | Update an existing event |
+| Method   | Endpoint          | Description                         |
+| -------- | ----------------- | ----------------------------------- |
+| `GET`    | `/api/events`     | List events (paginated, filterable) |
+| `GET`    | `/api/events/:id` | Get a single event by ID            |
+| `POST`   | `/api/events`     | Create a new event                  |
+| `PUT`    | `/api/events/:id` | Update an existing event            |
 | `DELETE` | `/api/events/:id` | Delete an event (cascades bookings) |
 
 **Query params for `GET /api/events`:**
 
-| Param | Type | Description |
-|---|---|---|
+| Param      | Type   | Description                                                          |
+| ---------- | ------ | -------------------------------------------------------------------- |
 | `category` | string | Filter by category (Conference, Concert, Sports, Workshop, Festival) |
-| `city` | string | Filter by city |
-| `search` | string | Full-text search on title, description, venue |
-| `page` | number | Page number (default: 1) |
-| `limit` | number | Items per page (default: 10) |
+| `city`     | string | Filter by city                                                       |
+| `search`   | string | Full-text search on title, description, venue                        |
+| `page`     | number | Page number (default: 1)                                             |
+| `limit`    | number | Items per page (default: 10)                                         |
 
 **POST / PUT `/api/events` body:**
+
 ```json
 {
   "title": "India Tech Summit 2026",
@@ -154,15 +185,17 @@ Base URL: `http://localhost:3001`
 
 ### Bookings
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/bookings` | List bookings (paginated, filterable by status) |
-| `GET` | `/api/bookings/:id` | Get booking by ID |
-| `GET` | `/api/bookings/ref/:ref` | Get booking by reference code (e.g. `EVT-A3B2C1`) |
-| `POST` | `/api/bookings` | Create a booking (atomically decrements seats) |
-| `DELETE` | `/api/bookings/:id` | Cancel a booking (atomically restores seats) |
+| Method   | Endpoint                 | Description                                     |
+| -------- | ------------------------ | ----------------------------------------------- |
+| `GET`    | `/api/bookings`          | List bookings (paginated, filterable by status) |
+| `GET`    | `/api/bookings/:id`      | Get booking by ID                               |
+| `GET`    | `/api/bookings/ref/:ref` | Get booking by reference code (e.g. `T-A3B2C1`) |
+| `POST`   | `/api/bookings`          | Create a booking (atomically decrements seats)  |
+| `DELETE` | `/api/bookings/:id`      | Cancel a booking (atomically restores seats)    |
+| `DELETE` | `/api/bookings`          | Cancel all bookings for the authenticated user  |
 
 **POST `/api/bookings` body:**
+
 ```json
 {
   "eventId": 1,
@@ -173,7 +206,7 @@ Base URL: `http://localhost:3001`
 }
 ```
 
-**Response includes** a unique `bookingRef` (format: `EVT-XXXXXX`), `totalPrice`, and `status: "confirmed"`.
+**Response includes** a unique `bookingRef` (format: first character of event title + `-XXXXXX`, e.g. `T-A3B2C1` for a "Tech" event), `totalPrice`, and `status: "confirmed"`.
 
 ---
 
@@ -198,18 +231,23 @@ eventhub/
 │       │   ├── env.js        ← Validated env vars
 │       │   └── swagger.js    ← swagger-jsdoc config
 │       ├── controllers/      ← Thin HTTP layer (calls services)
+│       │   ├── authController.js
 │       │   ├── eventController.js
 │       │   └── bookingController.js
 │       ├── middleware/
+│       │   ├── authMiddleware.js  ← JWT verification on protected routes
 │       │   ├── errorHandler.js   ← Maps domain errors → HTTP responses
 │       │   └── requestLogger.js  ← Colorised request logging
 │       ├── repositories/     ← Pure Prisma data access
+│       │   ├── userRepository.js
 │       │   ├── eventRepository.js
 │       │   └── bookingRepository.js
 │       ├── routes/           ← Express routers with full Swagger JSDoc
+│       │   ├── authRoutes.js
 │       │   ├── eventRoutes.js
 │       │   └── bookingRoutes.js
 │       ├── services/         ← Business logic, validation, transactions
+│       │   ├── authService.js
 │       │   ├── eventService.js
 │       │   └── bookingService.js
 │       ├── utils/
@@ -222,6 +260,10 @@ eventhub/
     ├── app/                  ← Next.js 14 App Router
     │   ├── layout.tsx        ← Root layout (Providers + Navbar)
     │   ├── page.tsx          ← Home (hero, live stats, featured events)
+    │   ├── login/
+    │   │   └── page.tsx      ← Login form
+    │   ├── register/
+    │   │   └── page.tsx      ← Registration form
     │   ├── events/
     │   │   ├── page.tsx      ← Events listing, filters, pagination
     │   │   └── [id]/page.tsx ← Event detail + booking form + confirmation
@@ -232,6 +274,8 @@ eventhub/
     │       ├── events/page.tsx   ← Admin: create/edit/delete events
     │       └── bookings/page.tsx ← Admin: view/cancel all bookings
     ├── components/
+    │   ├── auth/
+    │   │   └── AuthGuard.tsx     ← Redirects unauthenticated users to /login
     │   ├── ui/               ← Reusable primitives
     │   │   ├── Button.jsx    ← 5 variants, 3 sizes, loading state
     │   │   ├── Input.tsx     ← Extends HTMLInputElement props
@@ -267,38 +311,53 @@ eventhub/
 
 ---
 
+## Business Rules
+
+| Rule               | Detail                                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| Max user events    | 6 per user; oldest is auto-deleted (FIFO) when exceeded                                  |
+| Static events      | Seeded events (`isStatic: true`) are immutable — cannot be edited or deleted             |
+| Max bookings       | 9 per user; FIFO pruning prefers removing bookings from already-booked events first      |
+| Seat calculation   | Available seats are computed per-user: `totalSeats - sum(user's bookings on that event)` |
+| Booking reference  | First character of event title (uppercase) + `-XXXXXX`, e.g. `T-A3B2C1`                  |
+| Refund eligibility | Quantity = 1 → eligible; quantity > 1 → not eligible (client-side display only)          |
+| Cross-user access  | Attempting to access another user's resource returns "Access Denied" (not 404)           |
+
+---
+
 ## Playwright Test Selectors
 
 All key UI elements have `data-testid` attributes for Playwright automation:
 
-| `data-testid` | Element |
-|---|---|
-| `event-card` | Each event card in listings |
-| `book-now-btn` | "Book Now" link on event card |
-| `quantity-input` | Ticket quantity display in booking form |
-| `customer-name` | Full name input field |
-| `customer-email` | Email input field |
-| `customer-phone` | Phone number input field |
-| `confirm-booking-btn` | Submit booking button |
-| `booking-ref` | Booking reference shown on confirmation |
-| `booking-card` | Each booking card in my bookings list |
-| `cancel-booking-btn` | Cancel booking button |
-| `confirm-dialog-yes` | Confirm button in any confirmation dialog |
-| `admin-event-form` | Admin event create/edit form |
-| `event-title-input` | Title field in admin form |
-| `add-event-btn` | Submit button in admin form |
-| `event-table-row` | Each row in the admin events table |
-| `edit-event-btn` | Edit button in admin events table row |
-| `delete-event-btn` | Delete button in admin events table row |
-| `nav-events` | Navbar "Events" link |
-| `nav-bookings` | Navbar "My Bookings" link |
+| `data-testid`         | Element                                   |
+| --------------------- | ----------------------------------------- |
+| `event-card`          | Each event card in listings               |
+| `book-now-btn`        | "Book Now" link on event card             |
+| `quantity-input`      | Ticket quantity display in booking form   |
+| `customer-name`       | Full name input field                     |
+| `customer-email`      | Email input field                         |
+| `customer-phone`      | Phone number input field                  |
+| `confirm-booking-btn` | Submit booking button                     |
+| `booking-ref`         | Booking reference shown on confirmation   |
+| `booking-card`        | Each booking card in my bookings list     |
+| `cancel-booking-btn`  | Cancel booking button                     |
+| `confirm-dialog-yes`  | Confirm button in any confirmation dialog |
+| `admin-event-form`    | Admin event create/edit form              |
+| `event-title-input`   | Title field in admin form                 |
+| `add-event-btn`       | Submit button in admin form               |
+| `event-table-row`     | Each row in the admin events table        |
+| `edit-event-btn`      | Edit button in admin events table row     |
+| `delete-event-btn`    | Delete button in admin events table row   |
+| `nav-events`          | Navbar "Events" link                      |
+| `nav-bookings`        | Navbar "My Bookings" link                 |
 
 **Example Playwright usage:**
+
 ```javascript
 await page.click('[data-testid="book-now-btn"]');
-await page.fill('[data-testid="customer-name"]', 'Rahul Shetty');
-await page.fill('[data-testid="customer-email"]', 'rahul@test.com');
-await page.fill('[data-testid="customer-phone"]', '9876543210');
+await page.fill('[data-testid="customer-name"]', "Rahul Shetty");
+await page.fill('[data-testid="customer-email"]', "rahul@test.com");
+await page.fill('[data-testid="customer-phone"]', "9876543210");
 await page.click('[data-testid="confirm-booking-btn"]');
 await expect(page.locator('[data-testid="booking-ref"]')).toBeVisible();
 ```
